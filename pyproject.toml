@@ -7,7 +7,7 @@ build-backend = "hatchling.build"
 [project]
 name = "18c"
 version = "0.1.0"
-description = "Based on OCA Days 2024 Odoo demo with uv-level9"
+description = "18 Core"
 readme = "README.md"
 requires-python = "==3.12.*"
 dynamic = ["dependencies"]
@@ -52,5 +52,3 @@ addons_dirs = ["addons"] # odoo/design-themes & odoo/industry cannot be included
 
 [tool.uv.sources]
 odoo = { git = "https://github.com/OCA/OCB", branch = "18.0" }
-# odoo-addon-account_reconcile_oca = { git = "https://github.com/OCA/account-reconcile", rev = "refs/pull/808/head", subdirectory = "account_reconcile_oca" }
-# odoo-addon-mis_builder_budget = { git = "https://github.com/OCA/mis-builder", rev = "refs/pull/634/head", subdirectory = "mis_builder_budget" }
