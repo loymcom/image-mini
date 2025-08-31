@@ -1,0 +1,55 @@
+name: Docker Image CI
+
+on:
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build and push Docker image
+      - name: Build and Push Docker Image
+        env:
+          REPO: ${{ github.repository }}
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          # Sanitize branch name for Docker tag (replace / with -)
+          SAFE_BRANCH=${BRANCH_NAME//\//-}
+
+          # Branch-specific date tag
+          IMAGE_DATE=ghcr.io/$REPO/$SAFE_BRANCH:$(date +%Y-%m-%d)
+
+          # Branch-specific latest tag
+          IMAGE_LATEST=ghcr.io/$REPO/$SAFE_BRANCH:latest
+
+          echo "Building $IMAGE_DATE and tagging $IMAGE_LATEST"
+
+          # Build the Docker image
+          docker build -t $IMAGE_DATE .
+
+          # Tag it as latest too
+          docker tag $IMAGE_DATE $IMAGE_LATEST
+
+          # Push both tags
+          docker push $IMAGE_DATE
+          docker push $IMAGE_LATEST
